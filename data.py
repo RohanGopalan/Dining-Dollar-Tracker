@@ -25,11 +25,10 @@ def load_as_sorted_list(data):
 
 def add_transact(entry, data):
 
-    data.append(entry)
+    data["transactions"].append(entry)
 
 
     with open(FILE_NAME, "w") as file:
-
 
         json.dump(data, file, indent=4)
         print("Transaction saved!")

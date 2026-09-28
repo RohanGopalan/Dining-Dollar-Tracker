@@ -9,7 +9,6 @@ import sys
 
 def main():
 
-
     data = load_data()
     
     if get_start_amount(data) == 0:
@@ -25,7 +24,7 @@ def main():
 
     amount = input("How much did you spend? $")    
 
-    if not amount == "s":
+    try:
         amount = float(amount)
         
         date_today_str = date.today().isoformat()
@@ -36,6 +35,10 @@ def main():
         }
         data = add_transact(entry, data)
     
+    except ValueError:
+        print("Invalid Input: Skipping to statistics...")
+        pass
+
     print()
 
 
@@ -52,6 +55,8 @@ def main():
 
 
     print(f"You can spend ${spend_per_week:.2f} per week to stay on track")
+
+    print()
 
     graph_data(data)
 
