@@ -1,41 +1,45 @@
 from datetime import date
-import os
 
-import json
-
-import matplotlib.pyplot as plt
-
-import matplotlib.dates as mdates
-
-from calculations import calc_stats, get_dates_as_list
-from data import add_transact, load_as_sorted_list, load_data
+from calculations import calc_stats, get_start_amount_from_plan
+from data import add_start_amount, add_transact, get_start_amount, load_as_sorted_list, load_data
 from graph import graph_data
+
+import sys
 
 
 def main():
 
 
-    amount = input("How much did you spend? $")
+    data = load_data()
+    
+    if get_start_amount(data) == 0:
+        meal_plan = input("Which meal plan are you on? (Unlimited/14/10/7/80B/50B): ").capitalize()
+    
+        start = get_start_amount_from_plan(meal_plan)
+    
+        if start != 0:
+            data = add_start_amount(start, data)
+        else:
+            sys.exit("Invalid Input: Please try again.")
+    
 
-    date_today = date.today()
-    print()
-
+    amount = input("How much did you spend? $")    
 
     if not amount == "s":
         amount = float(amount)
         
-        date_today_str = date_today.isoformat()
+        date_today_str = date.today().isoformat()
         
         entry = {
             "amount": amount,
             "date": date_today_str
         }
-        add_transact(entry)
+        data = add_transact(entry, data)
     
-    data = load_data()
+    print()
 
 
-    spent, amount_left, spend_per_week, percent_spent, percent_of_sem = calc_stats(data)
+    spent, amount_left, spend_per_week, percent_spent, percent_of_sem = calc_stats(data["transactions"])
     
 
     print(f"You have spent ${spent:,.2f} so far")
@@ -49,7 +53,7 @@ def main():
 
     print(f"You can spend ${spend_per_week:.2f} per week to stay on track")
 
-    graph_data(load_as_sorted_list(data))
+    graph_data(data)
 
 
 

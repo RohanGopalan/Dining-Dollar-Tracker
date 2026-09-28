@@ -75,3 +75,15 @@ def get_amnt_spent_as_list(data):
 
     return cumulative_amounts
 
+def get_start_amount_from_plan(plan):
+    if plan in ["Unlimited", "80B", "50B"]:
+        return 267.50
+    elif plan == "14":
+        return 452.50
+    elif plan == "10":
+        return 587.50
+    elif plan == "7":
+        return 320
+    else:
+        return 0
+    
