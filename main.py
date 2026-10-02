@@ -1,6 +1,6 @@
 from datetime import date
 
-from calculations import calc_stats, get_start_amount_from_plan
+from calculations import calc_stats, get_start_amount_from_plan, total_spent
 from data import add_start_amount, add_transact, get_start_amount, load_data
 from graph import graph_data
 
@@ -14,8 +14,8 @@ def main():
     
     # if start amount is 0 (unchanged), 
     # prompt for meal plan and set start amount accordingly
-    if get_start_amount(data) == 0:
-        meal_plan = input("Which meal plan are you on? (Unlimited/14/10/7/80B/50B): ").capitalize()
+    if data["start_amount"] == 0:
+        meal_plan = input("Which meal plan are you on? (Unlimited/14/10/7/80B/50B): ").strip().capitalize()
     
         start = get_start_amount_from_plan(meal_plan)
     
@@ -31,8 +31,7 @@ def main():
     # add transaction to data and save to file
     try:
         amount = float(amount)
-        
-        if amount <= 0 or amount > get_start_amount(data):
+        if amount <= 0 or amount > data["start_amount"] - total_spent(data["transactions"]):
             raise ValueError
 
         date_today_str = date.today().isoformat()
@@ -51,27 +50,20 @@ def main():
 
     # calculate and display statistics
     spent, amount_left, spend_per_week, percent_spent, percent_of_sem = calc_stats(data["transactions"])
-    
 
     print(f"You have spent ${spent:,.2f} so far")
-
-
     print(f"You have ${amount_left:,.2f} left")
-
-
     print(f"You're {percent_of_sem:.1f}% through the semester and you've spent {percent_spent:.1f}% of your budget")
-
-
     print(f"You can spend ${spend_per_week:.2f} per week to stay on track")
 
     print()
 
-    # display plot of spending over time
-    graph_data(data)
 
+    # display plot of spending over time only if there are more than one unique dates
+    unique_dates = list(set([transact["date"] for transact in data["transactions"]]))
 
+    if len(unique_dates) > 1:
+        graph_data(data)
 
 if __name__ == "__main__":
     main()
-
-

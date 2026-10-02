@@ -12,8 +12,8 @@ MEAL_PLAN_AMOUNTS = {
     "14": 452.50,
     "10": 587.50,
     "7": 320,
-    "80B": 267.50,
-    "50B": 267.50,
+    "80": 267.50,
+    "50": 267.50,
 }
 
 def total_spent(data):
@@ -21,7 +21,6 @@ def total_spent(data):
 
     # loop through transactions and add up amounts spent
     for transact in data:
-
         total += transact["amount"]
     
     return total
@@ -55,7 +54,7 @@ def calc_stats(data):
 
 
 # takes in dictionary of transactions (not including start_amount)
-def get_dates_as_list(data):
+def get_dates_as_date_objs(data):
 
     dates = []
 
@@ -93,6 +92,8 @@ def get_amnt_spent_as_list(data):
 
 # methods to get start amount from meal plan and set it
 def get_start_amount_from_plan(plan):
+    # loop through meal plan dictionary and check if user input is contained by any keys or starts with any keys
+    # this allows user to input "unl" for "unlimited" or "14 track" for "14" and have it work
     for meal_plan, amount in MEAL_PLAN_AMOUNTS.items():
         if plan in meal_plan or plan.startswith(meal_plan):
             return amount
