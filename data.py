@@ -1,11 +1,12 @@
 import json, os
-
+import numpy as np
 from calculations import set_start_amount
 
 FILE_NAME = "transactions.json"
 DEFAULT_FILE = {
     "start_amount": 0,
-    "transactions": []
+    "amounts_spent": [],
+    "dates": [],
 }
 
 def load_data():
@@ -27,13 +28,17 @@ def load_data():
 
 # sort transactions by date and return as list
 # works with key x: x['date'] since it's in ISO format as a string
-def load_as_sorted(data):
-    return sorted(data["transactions"], key=lambda x: x['date'])
+def get_sorted_transactions(data):
+    dates = np.asarray(data["dates"])
+    amounts = np.asarray(data["amounts_spent"])
+    indices = np.argsort(dates.astype("datetime64[D]"))
+    return dates[indices], amounts[indices]
 
 # adds transaction to transactions dictionary and rewrites the file
-def add_transact(entry, data):
+def add_transact(data, amount, date_today):
 
-    data["transactions"].append(entry)
+    data["amounts_spent"].append(amount)
+    data["dates"].append(date_today)
 
 
     with open(FILE_NAME, "w") as file:

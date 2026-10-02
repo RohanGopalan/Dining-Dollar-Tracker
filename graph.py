@@ -3,15 +3,15 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
 from calculations import get_dates_as_date_objs, get_amnt_spent_as_list
-from data import load_as_sorted
+from data import get_sorted_transactions
 
 def graph_data(data):
     fig, ax = plt.subplots()
     
-    sorted_transactions = load_as_sorted(data)
+    sorted_dates, sorted_amounts = get_sorted_transactions(data)
 
     # plot date on x axis and amount spent subtracted from start amount on y axis
-    ax.plot(get_dates_as_date_objs(sorted_transactions), get_amnt_spent_as_list(sorted_transactions), marker="o", linestyle="-")
+    ax.plot(get_dates_as_date_objs(sorted_dates), get_amnt_spent_as_list(sorted_amounts), marker="o", linestyle="-")
     ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
 
