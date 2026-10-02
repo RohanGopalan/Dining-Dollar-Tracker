@@ -9,8 +9,11 @@ import sys
 
 def main():
 
+    # load data to begin with
     data = load_data()
     
+    # if start amount is 0 (unchanged), 
+    # prompt for meal plan and set start amount accordingly
     if get_start_amount(data) == 0:
         meal_plan = input("Which meal plan are you on? (Unlimited/14/10/7/80B/50B): ").capitalize()
     
@@ -22,11 +25,16 @@ def main():
             sys.exit("Invalid Input: Please try again.")
     
 
-    amount = input("How much did you spend? $")    
+    amount = input("How much did you spend? $")
 
+    # if user inputs valid number,
+    # add transaction to data and save to file
     try:
         amount = float(amount)
         
+        if amount <= 0 or amount > get_start_amount(data):
+            raise ValueError
+
         date_today_str = date.today().isoformat()
         
         entry = {
@@ -41,7 +49,7 @@ def main():
 
     print()
 
-
+    # calculate and display statistics
     spent, amount_left, spend_per_week, percent_spent, percent_of_sem = calc_stats(data["transactions"])
     
 
@@ -58,6 +66,7 @@ def main():
 
     print()
 
+    # display plot of spending over time
     graph_data(data)
 
 

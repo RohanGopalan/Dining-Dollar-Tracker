@@ -1,28 +1,29 @@
 import json, os
 
+from calculations import set_start_amount
+
 FILE_NAME = "transactions.json"
 
 def load_data():
 
-
+    # error checking if the file exists
     if not os.path.exists(FILE_NAME):
-
-
         print(f"{FILE_NAME} could not be found")
 
-
         return []
-    
 
-
+    # returns dictionary of start_amount and nested dictionary of transactions
     with open(FILE_NAME, "r") as file:
+        data = json.load(file)
+        set_start_amount(data["start_amount"])
+        return data
 
-        return json.load(file)
-
-
+# sort transactions by date and return as list
+# works with key x: x['date'] since it's in ISO format as a string
 def load_as_sorted_list(data):
     return sorted(data["transactions"], key=lambda x: x['date'])
 
+# adds transaction to transactions dictionary and rewrites the file
 def add_transact(entry, data):
 
     data["transactions"].append(entry)
@@ -35,11 +36,13 @@ def add_transact(entry, data):
 
     return data
 
+# methods for getting and adding start amounts
 def get_start_amount(data):
     return data["start_amount"]
 
 def add_start_amount(amount, data):
     data["start_amount"] = amount
+    set_start_amount(amount)
 
     with open(FILE_NAME, "w") as file:
 

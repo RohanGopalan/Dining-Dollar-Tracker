@@ -1,14 +1,25 @@
 from datetime import date
 
-from data import load_data
+# constant dates for fall semester 2026 and 
 
-START_AMOUNT = 452.50
 START_DATE = date(2026, 8, 21)
 END_DATE = date(2026, 12, 19)
+
+# start_amount constant initialization and dictionary for meal plan -> start amount
+START_AMOUNT = 0 # note: not fully constant, but constant when used for calculations
+MEAL_PLAN_AMOUNTS = {
+    "Unlimited": 267.50,
+    "80B": 267.50,
+    "50B": 267.50,
+    "14": 452.50,
+    "10": 587.50,
+    "7": 320
+}
 
 def total_spent(data):
     total = 0
 
+    # loop through transactions and add up amounts spent
     for transact in data:
 
         total += transact["amount"]
@@ -16,6 +27,7 @@ def total_spent(data):
     return total
 
 def calc_stats(data):
+    # first find percent of money spent
     spent = total_spent(data)
     percent_spent = 100 * (spent / START_AMOUNT)
 
@@ -24,7 +36,7 @@ def calc_stats(data):
     
     amount_left = START_AMOUNT - spent
     
-    
+    # find term length, days since start, and days left using timedelta
     term_length = (END_DATE - START_DATE).days
     
     
@@ -38,14 +50,16 @@ def calc_stats(data):
     
     percent_of_sem = 100 * (days_since_start / term_length)
 
+    # return all values as tuple
     return spent, amount_left, spend_per_week, percent_spent, percent_of_sem
 
 
+# takes in dictionary of transactions (not including start_amount)
 def get_dates_as_list(data):
 
     dates = []
 
-
+    # loops through transactions and splits date string to create date object for plotting
     for transact in data:
 
         full_date = transact["date"]
@@ -65,6 +79,8 @@ def get_amnt_spent_as_list(data):
     cumulative_amounts = []
     i = 0
     
+    # creates list starting with start amount
+    # and subtracting each transaction to create cumulative amounts for plotting
     for transact in data:
         if i == 0:
             cumulative_amounts.append(START_AMOUNT - transact["amount"])
@@ -75,15 +91,10 @@ def get_amnt_spent_as_list(data):
 
     return cumulative_amounts
 
+# methods to get start amount from meal plan and set it
 def get_start_amount_from_plan(plan):
-    if plan in ["Unlimited", "80B", "50B"]:
-        return 267.50
-    elif plan == "14":
-        return 452.50
-    elif plan == "10":
-        return 587.50
-    elif plan == "7":
-        return 320
-    else:
-        return 0
-    
+    return MEAL_PLAN_AMOUNTS.get(plan, 0)
+
+def set_start_amount(amount):
+    global START_AMOUNT
+    START_AMOUNT = amount

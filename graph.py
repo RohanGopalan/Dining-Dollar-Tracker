@@ -14,7 +14,7 @@ def graph_data(data):
     ax.xaxis.set_major_locator(mdates.DayLocator(interval=2))
     ax.xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
 
-
+    # rotates date labels tx o avoid overlap
     fig.autofmt_xdate()
 
     plt.ylim(top=data["start_amount"],bottom=0)
