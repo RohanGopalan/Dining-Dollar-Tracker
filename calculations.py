@@ -9,11 +9,11 @@ END_DATE = date(2026, 12, 19)
 START_AMOUNT = 0 # note: not fully constant, but constant when used for calculations
 MEAL_PLAN_AMOUNTS = {
     "Unlimited": 267.50,
-    "80B": 267.50,
-    "50B": 267.50,
     "14": 452.50,
     "10": 587.50,
-    "7": 320
+    "7": 320,
+    "80B": 267.50,
+    "50B": 267.50,
 }
 
 def total_spent(data):
@@ -93,7 +93,10 @@ def get_amnt_spent_as_list(data):
 
 # methods to get start amount from meal plan and set it
 def get_start_amount_from_plan(plan):
-    return MEAL_PLAN_AMOUNTS.get(plan, 0)
+    for meal_plan, amount in MEAL_PLAN_AMOUNTS.items():
+        if plan in meal_plan or plan.startswith(meal_plan):
+            return amount
+    return 0
 
 def set_start_amount(amount):
     global START_AMOUNT

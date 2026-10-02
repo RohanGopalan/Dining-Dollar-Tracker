@@ -1,7 +1,7 @@
 from datetime import date
 
 from calculations import calc_stats, get_start_amount_from_plan
-from data import add_start_amount, add_transact, get_start_amount, load_as_sorted_list, load_data
+from data import add_start_amount, add_transact, get_start_amount, load_data
 from graph import graph_data
 
 import sys
