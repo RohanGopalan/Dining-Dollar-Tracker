@@ -1,7 +1,7 @@
 from datetime import date
 
 from calculations import calc_stats, get_start_amount_from_plan, total_spent
-from data import add_start_amount, add_transact, get_start_amount, load_data
+from data import add_start_amount, add_transact, load_data
 from graph import graph_data
 
 import sys
@@ -31,16 +31,12 @@ def main():
     # add transaction to data and save to file
     try:
         amount = float(amount)
-        if amount <= 0 or amount > data["start_amount"] - total_spent(data["transactions"]):
+        if amount <= 0 or amount > data["start_amount"] - total_spent(data["amounts_spent"]):
             raise ValueError
 
         date_today_str = date.today().isoformat()
         
-        entry = {
-            "amount": amount,
-            "date": date_today_str
-        }
-        data = add_transact(entry, data)
+        data = add_transact(data, amount, date_today_str)
     
     except ValueError:
         print("Invalid Input: Skipping to statistics...")
@@ -49,7 +45,7 @@ def main():
     print()
 
     # calculate and display statistics
-    spent, amount_left, spend_per_week, percent_spent, percent_of_sem = calc_stats(data["transactions"])
+    spent, amount_left, spend_per_week, percent_spent, percent_of_sem = calc_stats(data["amounts_spent"])
 
     print(f"You have spent ${spent:,.2f} so far")
     print(f"You have ${amount_left:,.2f} left")
@@ -58,9 +54,8 @@ def main():
 
     print()
 
-
     # display plot of spending over time only if there are more than one unique dates
-    unique_dates = list(set([transact["date"] for transact in data["transactions"]]))
+    unique_dates = set(data["dates"])
 
     if len(unique_dates) > 1:
         graph_data(data)
