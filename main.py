@@ -11,23 +11,33 @@ def main():
 
     # load data to begin with
     data = load_data()
-
     today_date = date.today()
-    
-    if not set_semester(today_date):
+
+    if data["semester"]:
+
+        if (today_date.month >= 8 and data["semester"] == "Fall") or (today_date.month <= 5 and data["semester"] == "Spring"):
+            set_semester(today_date, semester=data["semester"])
+        
+        else:
+            sys.exit(f"Error: Current date does not match saved semester ({data['semester']}).")
+
+    elif not (result := set_semester(today_date, data=data)):
         print("Error: Current date is not within a semester range.")
         mimic_sem = input("Enter semester to mimic (Fall/Spring/None): ").strip().capitalize()
         
         if mimic_sem.startswith("F"):
             today_date = date(today_date.year, 8, max(today_date.month, 25))
-            set_semester(today_date)
+            set_semester(today_date, data=data)
 
         elif mimic_sem.startswith("S"):
             today_date = date(today_date.year, 1, max(today_date.month, 11))
-            set_semester(today_date)
+            set_semester(today_date, data=data)
 
         else:
             sys.exit("Exiting program...")
+
+    else:
+        data = result
     
     # if start amount is 0 (unchanged), 
     # prompt for meal plan and set start amount accordingly
