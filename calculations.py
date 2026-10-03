@@ -108,24 +108,29 @@ def set_start_amount(amount):
 def set_semester(today_date, semester=None, data=None):
     global START_DATE, END_DATE
 
+    # check for explicit semester arg from json data or mimicked semester, then set dates
     if semester is not None:
 
         if semester == "Fall":
+            # find dates for 4th Monday of August and 3rd Saturday of December according to calendar 
             START_DATE = get_nth_weekday(4, "Monday", 8, today_date.year)
             END_DATE = get_nth_weekday(3, "Saturday", 12, today_date.year)
             
         elif semester == "Spring":
+            # find dates for 2nd Monday of January and 2nd Saturday of May according to calendar
             START_DATE = get_nth_weekday(2, "Monday", 1, today_date.year)
             END_DATE = get_nth_weekday(2, "Saturday", 5, today_date.year)
 
+        # skips saving semester to json
         else:
             return False
         
         return True
 
 
+
+    # if no explicit semester is provided, determine the semester based on date and save to json
     if (today_date.month >= 8):
-        # find dates for 4th Monday of August and 3rd Saturday of December
         START_DATE = get_nth_weekday(4, "Monday", 8, today_date.year)
         END_DATE = get_nth_weekday(3, "Saturday", 12, today_date.year)
 
@@ -134,7 +139,6 @@ def set_semester(today_date, semester=None, data=None):
         return data
 
     elif (today_date.month <= 5):
-        # find dates for 2nd Monday of January and 2nd Saturday of May
         START_DATE = get_nth_weekday(2, "Monday", 1, today_date.year)
         END_DATE = get_nth_weekday(2, "Saturday", 5, today_date.year)
         
@@ -142,6 +146,7 @@ def set_semester(today_date, semester=None, data=None):
         print("Current semester set to: Spring")
         return data
 
+    # if current month doesn't correspond to a semester, return False to allow mimicking a semester
     else:
         return False
 

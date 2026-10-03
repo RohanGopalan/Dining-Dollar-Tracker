@@ -13,31 +13,42 @@ def main():
     data = load_data()
     today_date = date.today()
 
-    if data["semester"]:
+    # variables for readability in conditions
+    month = today_date.month
+    semester = data["semester"]
 
-        if (today_date.month >= 8 and data["semester"] == "Fall") or (today_date.month <= 5 and data["semester"] == "Spring"):
-            set_semester(today_date, semester=data["semester"])
-        
-        else:
-            sys.exit(f"Error: Current date does not match saved semester ({data['semester']}).")
+    current_semester = "Fall" if month >= 8 else "Spring" if month <= 5 else None
 
-    elif not (result := set_semester(today_date, data=data)):
-        print("Error: Current date is not within a semester range.")
-        mimic_sem = input("Enter semester to mimic (Fall/Spring/None): ").strip().capitalize()
-        
-        if mimic_sem.startswith("F"):
-            today_date = date(today_date.year, 8, max(today_date.month, 25))
-            set_semester(today_date, data=data)
+    # if semester truthy (not empty string), check if it matches current month and set dates if it does
+    if semester:
+        if current_semester and semester != current_semester:
+            sys.exit(f"Error: Current month does not match saved semester ({semester}).")
 
-        elif mimic_sem.startswith("S"):
-            today_date = date(today_date.year, 1, max(today_date.month, 11))
-            set_semester(today_date, data=data)
+        set_semester(today_date, semester=semester)
 
-        else:
-            sys.exit("Exiting program...")
-
+    # if semester is unsaved, set semester according to current month and save it
     else:
-        data = result
+        result = set_semester(today_date, data=data)
+
+        # if current month corresponds to semester save it to data 
+        if result:
+            data = result
+
+        # if current month does not correspond to semester, prompt user to mimic a semester
+        else:
+            print("Error: Current date is not within a semester range.")
+            mimic_sem = input("Enter semester to mimic (Fall/Spring/None): ").strip().capitalize()
+
+            if mimic_sem.startswith("F"):
+                today_date = date(today_date.year, 8, max(today_date.month, 25))
+
+            elif mimic_sem.startswith("S"):
+                today_date = date(today_date.year, 1, max(today_date.month, 11))
+
+            else:
+                sys.exit("Exiting program...")
+
+            set_semester(today_date, data=data)
     
     # if start amount is 0 (unchanged), 
     # prompt for meal plan and set start amount accordingly
