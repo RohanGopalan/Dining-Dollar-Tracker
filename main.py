@@ -31,7 +31,7 @@ def main():
         result = set_semester(today_date, data=data)
 
         # if current month corresponds to semester save it to data 
-        if result:
+        if result is not None:
             data = result
 
         # if current month does not correspond to semester, prompt user to mimic a semester

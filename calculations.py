@@ -15,6 +15,12 @@ MEAL_PLAN_AMOUNTS = {
     "50": 267.50,
 }
 
+# dictionary for semester to args for term start and end dates
+SEMESTER_DATES = {
+    "Fall": ((4, "Monday", 8), (3, "Saturday", 12)),
+    "Spring": ((2, "Monday", 1), (2, "Saturday", 5))
+}
+
 # dictionary to convert weekday string to integer to avoid magic numbers
 WEEKDAY_TO_INT = {
     "Monday": 0,
@@ -107,48 +113,37 @@ def set_start_amount(amount):
 
 def set_semester(today_date, semester=None, data=None):
     global START_DATE, END_DATE
+    if semester is None:
+        month = today_date.month
 
-    # check for explicit semester arg from json data or mimicked semester, then set dates
-    if semester is not None:
-
-        if semester == "Fall":
-            # find dates for 4th Monday of August and 3rd Saturday of December according to calendar 
-            START_DATE = get_nth_weekday(4, "Monday", 8, today_date.year)
-            END_DATE = get_nth_weekday(3, "Saturday", 12, today_date.year)
-            
-        elif semester == "Spring":
-            # find dates for 2nd Monday of January and 2nd Saturday of May according to calendar
-            START_DATE = get_nth_weekday(2, "Monday", 1, today_date.year)
-            END_DATE = get_nth_weekday(2, "Saturday", 5, today_date.year)
-
-        # skips saving semester to json
+        if month >= 8:
+            semester = "Fall"
+        elif month <= 5:
+            semester = "Spring"
         else:
-            return False
-        
-        return True
+            return None
 
+    dates = get_semester_dates(semester, today_date.year)
 
+    if dates is None:
+        return None
 
-    # if no explicit semester is provided, determine the semester based on date and save to json
-    if (today_date.month >= 8):
-        START_DATE = get_nth_weekday(4, "Monday", 8, today_date.year)
-        END_DATE = get_nth_weekday(3, "Saturday", 12, today_date.year)
+    START_DATE, END_DATE = dates
 
-        data = add_semester("Fall", data)
-        print("Current semester set to: Fall")
+    if data is not None:
+        data = add_semester(semester, data)
         return data
 
-    elif (today_date.month <= 5):
-        START_DATE = get_nth_weekday(2, "Monday", 1, today_date.year)
-        END_DATE = get_nth_weekday(2, "Saturday", 5, today_date.year)
-        
-        data = add_semester("Spring", data)
-        print("Current semester set to: Spring")
-        return data
+def get_semester_dates(semester, year):
+    if semester not in SEMESTER_DATES:
+        return None
 
-    # if current month doesn't correspond to a semester, return False to allow mimicking a semester
-    else:
-        return False
+    start, end = SEMESTER_DATES[semester]
+
+    start_date = get_nth_weekday(*start, year)
+    end_date = get_nth_weekday(*end, year)
+
+    return start_date, end_date
 
 # mathematically return the date object for nth weekday of a given month and year
 def get_nth_weekday(n, weekday, month, year):
