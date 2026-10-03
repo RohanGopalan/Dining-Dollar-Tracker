@@ -54,6 +54,7 @@ def add_transact(data, amount, date_today):
 def get_start_amount(data):
     return data["start_amount"]
 
+# sets start amount in data dictionary and rewrites file, then returns data to main
 def add_start_amount(amount, data):
     data["start_amount"] = amount
     
@@ -67,12 +68,13 @@ def add_start_amount(amount, data):
     
     return data
 
+# sets semester in data dictionary and rewrites file, then returns data to main
 def add_semester(semester, data):
     data["semester"] = semester.capitalize()
 
     with open(FILE_NAME, "w") as file:
 
         json.dump(data, file, indent=4)
-        print("Semester saved!")
+        print(f"{semester} semester saved!")
 
     return data

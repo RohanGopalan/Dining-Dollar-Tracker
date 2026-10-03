@@ -113,6 +113,8 @@ def set_start_amount(amount):
 
 def set_semester(today_date, semester=None, data=None):
     global START_DATE, END_DATE
+
+    # if semester is not explicitly given, determine it from month
     if semester is None:
         month = today_date.month
 
@@ -123,13 +125,13 @@ def set_semester(today_date, semester=None, data=None):
         else:
             return None
 
-    dates = get_semester_dates(semester, today_date.year)
+    # set dates for semester
+    START_DATE, END_DATE = get_semester_dates(semester, today_date.year)
 
-    if dates is None:
+    if START_DATE is None or END_DATE is None:
         return None
 
-    START_DATE, END_DATE = dates
-
+    # if data is given (meaning semester is being set for the first time), add it to json and return data to main
     if data is not None:
         data = add_semester(semester, data)
         return data
@@ -138,8 +140,10 @@ def get_semester_dates(semester, year):
     if semester not in SEMESTER_DATES:
         return None
 
+    # use dictionary to get args nth_weekday function for start and end dates
     start, end = SEMESTER_DATES[semester]
 
+    # unpack start and end args into get_nth_weekday function to get dates
     start_date = get_nth_weekday(*start, year)
     end_date = get_nth_weekday(*end, year)
 

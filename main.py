@@ -22,6 +22,7 @@ def main():
     # if semester truthy (not empty string), check if it matches current month and set dates if it does
     if semester:
         if current_semester and semester != current_semester:
+            # TODO could mimic semester here or prompt user to clear data and start over
             sys.exit(f"Error: Current month does not match saved semester ({semester}).")
 
         set_semester(today_date, semester=semester)
