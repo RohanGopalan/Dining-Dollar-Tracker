@@ -1,13 +1,11 @@
 from datetime import date
 
-# constant dates for fall semester 2026 and 
+from data import add_semester
 
-START_DATE = date(2026, 8, 21)
-END_DATE = date(2026, 12, 19)
+START_DATE, END_DATE = None, None
 
-# start_amount initialized to 0 but set to correct amount after prompting user
-# and dictionary for meal plan -> start amount
-START_AMOUNT = 0 # note: not fully constant, but constant when used for calculations
+# dictionary for meal plan -> start amount
+START_AMOUNT = 0 # note: initialized correctly when loaded from json data
 MEAL_PLAN_AMOUNTS = {
     "Unlimited": 267.50,
     "14": 452.50,
@@ -15,6 +13,23 @@ MEAL_PLAN_AMOUNTS = {
     "7": 320,
     "80": 267.50,
     "50": 267.50,
+}
+
+# dictionary for semester to args for term start and end dates
+SEMESTER_DATES = {
+    "Fall": ((4, "Monday", 8), (3, "Saturday", 12)),
+    "Spring": ((2, "Monday", 1), (2, "Saturday", 5))
+}
+
+# dictionary to convert weekday string to integer to avoid magic numbers
+WEEKDAY_TO_INT = {
+    "Monday": 0,
+    "Tuesday": 1,
+    "Wednesday": 2,
+    "Thursday": 3,
+    "Friday": 4,
+    "Saturday": 5,
+    "Sunday": 6
 }
 
 def total_spent(amounts):
@@ -95,3 +110,52 @@ def get_start_amount_from_plan(plan):
 def set_start_amount(amount):
     global START_AMOUNT
     START_AMOUNT = amount
+
+def set_semester(today_date, semester=None, data=None):
+    global START_DATE, END_DATE
+
+    # if semester is not explicitly given, determine it from month
+    if semester is None:
+        month = today_date.month
+
+        if month >= 8:
+            semester = "Fall"
+        elif month <= 5:
+            semester = "Spring"
+        else:
+            return None
+
+    # set dates for semester
+    START_DATE, END_DATE = get_semester_dates(semester, today_date.year)
+
+    if START_DATE is None or END_DATE is None:
+        return None
+
+    # if data is given (meaning semester is being set for the first time), add it to json and return data to main
+    if data is not None:
+        data = add_semester(semester, data)
+        return data
+
+def get_semester_dates(semester, year):
+    if semester not in SEMESTER_DATES:
+        return None
+
+    # use dictionary to get args nth_weekday function for start and end dates
+    start, end = SEMESTER_DATES[semester]
+
+    # unpack start and end args into get_nth_weekday function to get dates
+    start_date = get_nth_weekday(*start, year)
+    end_date = get_nth_weekday(*end, year)
+
+    return start_date, end_date
+
+# mathematically return the date object for nth weekday of a given month and year
+def get_nth_weekday(n, weekday, month, year):
+    weekday_int = WEEKDAY_TO_INT.get(weekday.capitalize(), 0)
+
+    first_day = date(year, month, 1)
+    first_weekday = first_day.weekday()
+
+    day = 1 + (weekday_int - first_weekday) % 7 + 7 * (n - 1)
+
+    return date(year, month, day)
