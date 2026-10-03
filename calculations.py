@@ -1,9 +1,7 @@
 from datetime import date
+from enum import StrEnum
 
-# constant dates for fall semester 2026 and 
-
-START_DATE = date(2026, 8, 21)
-END_DATE = date(2026, 12, 19)
+START_DATE, END_DATE = None, None
 
 # start_amount initialized to 0 but set to correct amount after prompting user
 # and dictionary for meal plan -> start amount
@@ -16,6 +14,21 @@ MEAL_PLAN_AMOUNTS = {
     "80": 267.50,
     "50": 267.50,
 }
+
+# dictionary to convert weekday string to integer to avoid magic numbers
+WEEKDAY_TO_INT = {
+    "monday": 0,
+    "tuesday": 1,
+    "wednesday": 2,
+    "thursday": 3,
+    "friday": 4,
+    "saturday": 5,
+    "sunday": 6
+}
+
+class Semester(StrEnum):
+    FALL = "Fall"
+    SPRING = "Spring"
 
 def total_spent(amounts):
     return sum(amounts)
@@ -95,3 +108,36 @@ def get_start_amount_from_plan(plan):
 def set_start_amount(amount):
     global START_AMOUNT
     START_AMOUNT = amount
+
+def set_semester(today_date):
+    global START_DATE, END_DATE
+
+    if (today_date.month >= 8):
+        # find dates for 4th Monday of August and 3rd Saturday of December
+        START_DATE = get_nth_weekday(4, "Monday", 8, today_date.year)
+        END_DATE = get_nth_weekday(3, "Saturday", 12, today_date.year)
+
+        print("Current semester set to: Fall")
+        return True
+
+    elif (today_date.month <= 5):
+        # find dates for 2nd Monday of January and 2nd Saturday of May
+        START_DATE = get_nth_weekday(2, "Monday", 1, today_date.year)
+        END_DATE = get_nth_weekday(2, "Saturday", 5, today_date.year)
+        
+        print("Current semester set to: Spring")
+        return True
+
+    else:
+        return False
+
+# mathematically return the date object for nth weekday of a given month and year
+def get_nth_weekday(n, weekday, month, year):
+    weekday_int = WEEKDAY_TO_INT.get(weekday.lower(), 0)
+
+    first_day = date(year, month, 1)
+    first_weekday = first_day.weekday()
+
+    day = 1 + (weekday_int - first_weekday) % 7 + 7 * (n - 1)
+
+    return date(year, month, day)

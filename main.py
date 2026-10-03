@@ -1,6 +1,6 @@
 from datetime import date
 
-from calculations import calc_stats, get_start_amount_from_plan, total_spent
+from calculations import calc_stats, get_start_amount_from_plan, set_semester, total_spent
 from data import add_start_amount, add_transact, load_data
 from graph import graph_data
 
@@ -11,6 +11,23 @@ def main():
 
     # load data to begin with
     data = load_data()
+
+    today_date = date.today()
+    
+    if not set_semester(today_date):
+        print("Error: Current date is not within a semester range.")
+        mimic_sem = input("Enter semester to mimic (Fall/Spring/None): ").strip().capitalize()
+        
+        if mimic_sem.startswith("F"):
+            today_date = date(today_date.year, 8, max(today_date.month, 25))
+            set_semester(today_date)
+
+        elif mimic_sem.startswith("S"):
+            today_date = date(today_date.year, 1, max(today_date.month, 11))
+            set_semester(today_date)
+
+        else:
+            sys.exit("Exiting program...")
     
     # if start amount is 0 (unchanged), 
     # prompt for meal plan and set start amount accordingly
@@ -34,13 +51,12 @@ def main():
         if amount <= 0 or amount > data["start_amount"] - total_spent(data["amounts_spent"]):
             raise ValueError
 
-        date_today_str = date.today().isoformat()
+        date_today_str = today_date.isoformat()
         
         data = add_transact(data, amount, date_today_str)
     
     except ValueError:
         print("Invalid Input: Skipping to statistics...")
-        pass
 
     print()
 
