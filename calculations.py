@@ -63,36 +63,28 @@ def calc_stats(data):
     return spent, amount_left, spend_per_week, percent_spent, percent_of_sem
 
 
-# takes in dictionary of transactions (not including start_amount)
-def get_dates_as_date_objs(data):
+# takes in dictionary of transactions (not including start_amount) and returns list of date objects
+def get_dates_for_plotting(data):
 
     dates = []
+    # add start date to list of dates for plotting
+    dates.append(date.fromisoformat(START_DATE.isoformat()))
 
     # loops through transactions and splits date string to create date object for plotting
     for date_current in data:
-
-        year = int(date_current[:4])
-
-        month = int(date_current[5:7])
-
-        day = int(date_current[8:])
-
-
         dates.append(date.fromisoformat(date_current))
 
     return dates
 
 def get_amnt_spent_as_list(data):
     cumulative_amounts = []
+    cumulative_amounts.append(START_AMOUNT)
     i = 0
     
     # creates list starting with start amount
     # and subtracting each transaction to create cumulative amounts for plotting
     for amount in data:
-        if i == 0:
-            cumulative_amounts.append(START_AMOUNT - amount)
-        else:
-            cumulative_amounts.append(cumulative_amounts[i-1] - amount)
+        cumulative_amounts.append(cumulative_amounts[i-1] - amount)
 
         i += 1
 
@@ -159,3 +151,9 @@ def get_nth_weekday(n, weekday, month, year):
     day = 1 + (weekday_int - first_weekday) % 7 + 7 * (n - 1)
 
     return date(year, month, day)
+
+def get_start_end():
+    return START_DATE, END_DATE
+
+def get_start_amount():
+    return START_AMOUNT
