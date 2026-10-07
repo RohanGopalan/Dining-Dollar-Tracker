@@ -79,7 +79,7 @@ def get_dates_for_plotting(data):
 def get_amnt_spent_as_list(data):
     cumulative_amounts = []
     cumulative_amounts.append(START_AMOUNT)
-    i = 0
+    i = 1
     
     # creates list starting with start amount
     # and subtracting each transaction to create cumulative amounts for plotting
