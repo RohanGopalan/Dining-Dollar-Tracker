@@ -59,8 +59,15 @@ def calc_stats(data):
     
     percent_of_sem = 100 * (days_since_start / term_length)
 
+    # slope of optimal spending plot
+    optimal_spend_per_day = START_AMOUNT / term_length
+
+    optimal_spent = optimal_spend_per_day * days_since_start
+
+    amount_over_optimal = optimal_spent - spent
+
     # return all values as tuple
-    return spent, amount_left, spend_per_week, percent_spent, percent_of_sem
+    return spent, amount_left, spend_per_week, percent_spent, percent_of_sem, amount_over_optimal
 
 
 # takes in dictionary of transactions (not including start_amount) and returns list of date objects
@@ -92,8 +99,9 @@ def get_amnt_spent_as_list(data):
 
 # methods to get start amount from meal plan and set it
 def get_start_amount_from_plan(plan):
+
     # loop through meal plan dictionary and check if user input is contained by any keys or starts with any keys
-    # this allows user to input "unl" for "unlimited" or "14 track" for "14" and have it work
+    # allows user to input "unl" for "unlimited" or "14 track" for "14" and have it work
     for meal_plan, amount in MEAL_PLAN_AMOUNTS.items():
         if plan in meal_plan or plan.startswith(meal_plan):
             return amount
@@ -143,12 +151,17 @@ def get_semester_dates(semester, year):
 
 # mathematically return the date object for nth weekday of a given month and year
 def get_nth_weekday(n, weekday, month, year):
+    # convert weekday string to weekday integer, defaulting to Monday (0)
     weekday_int = WEEKDAY_TO_INT.get(weekday.capitalize(), 0)
 
     first_day = date(year, month, 1)
     first_weekday = first_day.weekday()
 
-    day = 1 + (weekday_int - first_weekday) % 7 + 7 * (n - 1)
+    # find days until the correct day of the week, then add 1 to get its date
+    day = 1 + (weekday_int - first_weekday) % 7
+
+    # add 7 days for every n-1 week to get date of particular day of the week
+    day += 7 * (n - 1)
 
     return date(year, month, day)
 

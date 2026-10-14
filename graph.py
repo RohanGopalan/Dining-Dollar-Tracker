@@ -1,9 +1,9 @@
-import matplotlib.pyplot as plt
+from datetime import date
 
+import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-from calculations import get_dates_for_plotting, get_amnt_spent_as_list, get_start_amount, get_start_end
-from data import get_sorted_transactions
+from calculations import get_dates_for_plotting, get_amnt_spent_as_list, get_start_end
 
 def graph_data(data):
     fig, axs = plt.subplots(figsize=(10, 6))
@@ -11,13 +11,15 @@ def graph_data(data):
     dates = get_dates_for_plotting(data["dates"])
 
     # plot date on x axis and amount spent subtracted from start amount on y axis
-    axs.plot(dates, get_amnt_spent_as_list(data["amounts_spent"]), marker="o", linestyle="-", color="blue", label="Spending")
+    axs.plot(dates, get_amnt_spent_as_list(data["amounts_spent"]), marker="o", linestyle="-", color="blue", label="Your Spending")
 
     start_end = get_start_end()
     
     start_end_amounts = data["start_amount"], 0
 
-    axs.plot(start_end, start_end_amounts, color="green", linestyle="-", label="Projected Spending")
+    axs.plot(start_end, start_end_amounts, color="green", linestyle="-", label="Optimal Spending")
+
+    axs.axvline(x=date.today(), color='r', linestyle=':', alpha=0.5, label="Current Date")
 
     dates_interval = round((start_end[1] - start_end[0]).days / 30)
 

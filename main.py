@@ -83,10 +83,10 @@ def main():
     print()
 
     # calculate and display statistics
-    spent, amount_left, spend_per_week, percent_spent, percent_of_sem = calc_stats(data["amounts_spent"])
+    spent, amount_left, spend_per_week, percent_spent, percent_of_sem, amount_extra = calc_stats(data["amounts_spent"])
 
     print(f"You have spent ${spent:,.2f} so far")
-    print(f"You have ${amount_left:,.2f} left")
+    print(f"You have ${amount_left:,.2f} left, which is ${amount_extra:,.2f} more than optimal by this time")
     print(f"You're {percent_of_sem:.1f}% through the semester and you've spent {percent_spent:.1f}% of your budget")
     print(f"You can spend ${spend_per_week:.2f} per week to stay on track")
 
