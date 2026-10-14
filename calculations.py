@@ -11,8 +11,8 @@ MEAL_PLAN_AMOUNTS = {
     "14": 452.50,
     "10": 587.50,
     "7": 320,
-    "80": 267.50,
-    "50": 267.50,
+    "80B": 267.50,
+    "50B": 267.50,
 }
 
 # dictionary for semester to args for term start and end dates
