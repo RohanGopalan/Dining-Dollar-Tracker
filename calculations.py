@@ -170,3 +170,16 @@ def get_start_end():
 
 def get_start_amount():
     return START_AMOUNT
+
+def get_amount_spent_in_past_week(data):
+    sum = 0
+    today = date.today()
+    
+    for date_str, spent in zip(data["dates"], data["amounts_spent"]):
+        
+        date_obj = date.fromisoformat(date_str)
+
+        if (today - date_obj).days <= 7:
+            sum += spent
+
+    return sum

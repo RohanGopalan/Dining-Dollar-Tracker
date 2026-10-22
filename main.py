@@ -1,6 +1,6 @@
 from datetime import date
 
-from calculations import calc_stats, get_start_amount_from_plan, set_semester, total_spent
+from calculations import calc_stats, get_amount_spent_in_past_week, get_start_amount_from_plan, set_semester, total_spent
 from data import add_start_amount, add_transact, load_data
 from graph import graph_data
 
@@ -84,19 +84,24 @@ def main():
 
     # calculate and display statistics
     spent, amount_left, spend_per_week, percent_spent, percent_of_sem, amount_extra = calc_stats(data["amounts_spent"])
+    past_week = get_amount_spent_in_past_week(data)
+    extra = spend_per_week - past_week
 
     print(f"You have spent ${spent:,.2f} so far")
     print(f"You have ${amount_left:,.2f} left, which is ${amount_extra:,.2f} more than optimal by this time")
     print(f"You're {percent_of_sem:.1f}% through the semester and you've spent {percent_spent:.1f}% of your budget")
     print(f"You can spend ${spend_per_week:.2f} per week to stay on track")
-
+    print(f"You've spent ${past_week:.2f} in the past 7 days, so you are ${extra:.2f} {"under budget" if extra>=0 else "over budget"}")
     print()
 
     # display plot of spending over time only if there are more than one unique dates
     unique_dates = set(data["dates"])
 
     if len(unique_dates) > 1:
-        graph_data(data)
+        user_input = input("Would you like to display the spending graph? (Yes/No) ").lower()
+
+        if user_input.startswith("yes"):
+            graph_data(data)
 
 if __name__ == "__main__":
     main()
