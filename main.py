@@ -32,7 +32,7 @@ def main():
         result = set_semester(today_date, data=data)
 
         # if current month corresponds to semester save it to data 
-        if result is not None:
+        if result:
             data = result
 
         # if current month does not correspond to semester, prompt user to mimic a semester
@@ -100,7 +100,7 @@ def main():
     if len(unique_dates) > 1:
         user_input = input("Would you like to display the spending graph? (Yes/No) ").lower()
 
-        if user_input.startswith("yes"):
+        if user_input in ("y", "yes"):
             graph_data(data)
 
 if __name__ == "__main__":

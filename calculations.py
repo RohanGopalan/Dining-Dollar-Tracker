@@ -1,5 +1,7 @@
 from datetime import date
 
+import numpy as np
+
 from data import add_semester
 
 START_DATE, END_DATE = None, None
@@ -81,7 +83,7 @@ def get_dates_for_plotting(data):
     for date_current in data:
         dates.append(date.fromisoformat(date_current))
 
-    return dates
+    return np.array(dates)
 
 def get_amnt_spent_as_list(data):
     cumulative_amounts = []
@@ -95,7 +97,7 @@ def get_amnt_spent_as_list(data):
 
         i += 1
 
-    return cumulative_amounts
+    return np.array(cumulative_amounts)
 
 # methods to get start amount from meal plan and set it
 def get_start_amount_from_plan(plan):
