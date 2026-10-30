@@ -60,13 +60,16 @@ When you run the program, it will guide you through setting up your tracking dat
 ### Example Output
 
 ```text
-You have spent $87.50 so far
-You have $365.00 left, which is $25.00 more than optimal by this time
-You're 30.0% through the semester and you've spent 19.4% of your budget
-You can spend $22.00 per week to stay on track
+You have spent $145.26 so far
+You have $307.24 left, which is $110.00 more than optimal by this time
+You're 56.4% through the semester and you've spent 32.1% of your budget
+You can spend $42.17 per week to stay on track
+You've spent $15.32 in the past 7 days, so you are $26.85 under budget
 ```
 
 *Example output only. Actual values depend on your meal plan, spending history, and the current date.*
+
+! [Example image of displayed graph](example_graph.png)
 
 ## Meal Plans
 

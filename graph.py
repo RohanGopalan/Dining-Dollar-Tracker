@@ -10,8 +10,11 @@ import calculations as cal
 
 
 def graph_data(data):
+
     # initialize matplotlib subplots
     fig, axs = plt.subplots(figsize=(10, 6))
+    fig.canvas.manager.set_window_title("Dining Dollar Usage")
+
 
     # get date objects (x) and amount remaining at each date (y)
     dates = get_dates_for_plotting(data["dates"])
