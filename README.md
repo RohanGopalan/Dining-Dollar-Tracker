@@ -69,7 +69,7 @@ You've spent $15.32 in the past 7 days, so you are $26.85 under budget
 
 *Example output only. Actual values depend on your meal plan, spending history, and the current date.*
 
-! [Example image of displayed graph](example_graph.png)
+![Example image of displayed graph](example_graph.png)
 
 ## Meal Plans
 
