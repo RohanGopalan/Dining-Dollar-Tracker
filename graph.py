@@ -5,7 +5,7 @@ import matplotlib.dates as mdates
 import numpy as np
 from numpy.polynomial import Polynomial as P
 
-from calculations import get_dates_for_plotting, get_amnt_spent_as_list, get_start_end
+from calculations import get_lists_for_plotting, get_start_end
 import calculations as cal
 
 
@@ -15,10 +15,7 @@ def graph_data(data):
     fig, axs = plt.subplots(figsize=(10, 6))
     fig.canvas.manager.set_window_title("Dining Dollar Usage")
 
-
-    # get date objects (x) and amount remaining at each date (y)
-    dates = get_dates_for_plotting(data["dates"])
-    cumul_amnts_spent = get_amnt_spent_as_list(data["amounts_spent"])
+    amnt_remaining, dates = get_lists_for_plotting(data)
 
     # get start and end date objects from calculations.py
     start_end = get_start_end()
@@ -28,7 +25,7 @@ def graph_data(data):
     days_since_start = ( dates.astype("datetime64[D]") - np.datetime64(start_end[0]) ).astype(int)
 
     # creates LSRL of spending anchored at the start amount
-    spending_trend = anchored_lsrl(data["start_amount"], days_since_start, cumul_amnts_spent)
+    spending_trend = anchored_lsrl(data["start_amount"], days_since_start, amnt_remaining)
     
     # tuple for min and max x values for spending trendline
     days_in_sem = (0, (start_end[1] - start_end[0]).days)
@@ -38,7 +35,7 @@ def graph_data(data):
 
 
     # plot date on x axis and amount spent subtracted from start amount on y axis
-    axs.plot(dates, cumul_amnts_spent, marker="o", linestyle="-", color="blue", markersize=4, label="Your Spending")
+    axs.plot(dates, amnt_remaining, marker="o", linestyle="-", color="blue", markersize=4, label="Your Spending")
     
 
     # tuple of optimal spending amounts from start to finish of semester

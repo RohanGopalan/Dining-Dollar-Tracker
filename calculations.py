@@ -71,33 +71,32 @@ def calc_stats(data):
     # return all values as tuple
     return spent, amount_left, spend_per_week, percent_spent, percent_of_sem, amount_over_optimal
 
+# takes in data dictionary and returns the amount remaining after each transaction and the date of each transaction as np arrays
+def get_lists_for_plotting(data):
+    # initialize both lists with starting values so they are shown on plot
+    amount_remaining = [START_AMOUNT]
+    dates = [START_DATE]
 
-# takes in dictionary of transactions (not including start_amount) and returns list of date objects
-def get_dates_for_plotting(data):
+    prev_date = START_DATE
 
-    dates = []
-    # add start date to list of dates for plotting
-    dates.append(date.fromisoformat(START_DATE.isoformat()))
+    # loops through both amounts spent and dates to add each transaction as list of amount remaining and date objects
+    # note: creates a list with only one combined value for each corresponding date
+    for amount, date_current in zip(data["amounts_spent"], data["dates"]):
+        # convert iso format date to date object
+        date_current = date.fromisoformat(date_current)
 
-    # loops through transactions and splits date string to create date object for plotting
-    for date_current in data:
-        dates.append(date.fromisoformat(date_current))
+        # if current date is different from before, add a placeholder amount and append the date to list of dates
+        if date_current != prev_date:
+            amount_remaining.append(amount_remaining[-1])
+            dates.append(date_current)
 
-    return np.array(dates)
+        # subtract current amount from last index in amount remaining
+        # means that the if block above just checks if the list should create a new item for this entry
+        amount_remaining[-1] -= amount
+        prev_date = date_current
 
-def get_amnt_spent_as_list(data):
-    cumulative_amounts = []
-    cumulative_amounts.append(START_AMOUNT)
-    i = 1
-    
-    # creates list starting with start amount
-    # and subtracting each transaction to create cumulative amounts for plotting
-    for amount in data:
-        cumulative_amounts.append(cumulative_amounts[i-1] - amount)
+    return np.array(amount_remaining), np.array(dates)
 
-        i += 1
-
-    return np.array(cumulative_amounts)
 
 # methods to get start amount from meal plan and set it
 def get_start_amount_from_plan(plan):

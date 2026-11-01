@@ -31,8 +31,8 @@ If you're on a meal plan and want to know how much you’ve spent, how much you 
 1. Clone the repository:
 
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/RohanGopalan/Dining-Dollar-Tracker
+   cd Dining-Dollar-Tracker
    ```
 
 2. Install the dependencies:
@@ -100,7 +100,7 @@ The project is split into a few modules, each handling a different part of the p
 
 ### Data Storage
 
-Your data is stored locally in `transactions.json`. The file uses a dictionary to store your meal plan's starting amount, the current semester, and two corresponding lists for the amount spent and date of a transaction.
+Data is stored locally in `transactions.json`. The file uses a dictionary to store your meal plan's starting amount, the current semester, and two corresponding lists for the amount spent and date of a transaction.
 
 For example:
 
